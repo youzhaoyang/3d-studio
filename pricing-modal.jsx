@@ -642,6 +642,147 @@ function PromoCountdown() {
   );
 }
 
+// Poster-style promo banner: hero artwork backdrop, two-line copy on the
+// left, large bare countdown digits with unit labels on the right.
+// Lives at the top of the pricing modal. Visual reference: athlete-jump
+// poster banner provided as design reference.
+function PromoPoster({ onClose }) {
+  const endRef = React.useRef(null);
+  if (endRef.current == null) {
+    endRef.current = Date.now() + (3 * 86400 + 9 * 3600 + 7 * 60 + 44) * 1000;
+  }
+  const [now, setNow] = React.useState(Date.now());
+  React.useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const remain = Math.max(0, endRef.current - now);
+  const d = Math.floor(remain / 86400000);
+  const h = Math.floor((remain % 86400000) / 3600000);
+  const m = Math.floor((remain % 3600000) / 60000);
+  const s = Math.floor((remain % 60000) / 1000);
+  const pad = n => String(n).padStart(2, "0");
+  const cells = [
+    { label: "天", value: pad(d) },
+    { label: "时", value: pad(h) },
+    { label: "分", value: pad(m) },
+    { label: "秒", value: pad(s) }
+  ];
+
+  return (
+    <div style={{
+      position: "relative",
+      width: "100%",
+      minHeight: 108,
+      overflow: "hidden",
+      borderBottom: "1px solid rgba(0,0,0,0.4)",
+      backgroundColor: "#3a2018",
+      backgroundImage:
+        "radial-gradient(circle at 60% 35%, rgba(255,180,120,0.55) 0%, transparent 38%), " +
+        "radial-gradient(circle at 78% 78%, rgba(255,140,80,0.45) 0%, transparent 42%), " +
+        "radial-gradient(circle at 30% 70%, rgba(120,60,30,0.6) 0%, transparent 50%), " +
+        "radial-gradient(800px 200px at 50% 100%, rgba(0,0,0,0.55), transparent 70%), " +
+        "linear-gradient(105deg, #281510 0%, #4a2418 35%, #8a4a28 70%, #c87850 100%)"
+    }}>
+      {/* Soft kinetic streak + bokeh highlights for poster feel */}
+      <div aria-hidden="true" style={{
+        position: "absolute",
+        inset: 0,
+        backgroundImage:
+          "linear-gradient(78deg, transparent 55%, rgba(255,220,180,0.18) 62%, rgba(255,200,150,0.10) 68%, transparent 75%), " +
+          "radial-gradient(2px 2px at 18% 28%, rgba(255,230,200,0.6), transparent 60%), " +
+          "radial-gradient(1.5px 1.5px at 84% 20%, rgba(255,220,180,0.5), transparent 60%), " +
+          "radial-gradient(1.5px 1.5px at 92% 60%, rgba(255,220,180,0.5), transparent 60%)",
+        pointerEvents: "none"
+      }} />
+
+      {/* Left scrim for text legibility */}
+      <div aria-hidden="true" style={{
+        position: "absolute",
+        inset: 0,
+        background: "linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 45%, transparent 65%)",
+        pointerEvents: "none"
+      }} />
+
+      <div style={{
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 32,
+        padding: "22px 80px 22px 40px"
+      }}>
+        {/* Copy — two lines */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{
+            fontSize: 22,
+            fontWeight: 700,
+            color: "#fff",
+            letterSpacing: 0.3,
+            lineHeight: 1.25,
+            textShadow: "0 2px 12px rgba(0,0,0,0.55)"
+          }}>
+            <span aria-hidden="true" style={{ marginRight: 10 }}>🎉</span>
+            周年庆限时特惠：按年订阅最高立省{" "}
+            <span style={{
+              color: "#ffd400",
+              fontWeight: 800,
+              fontSize: 26,
+              textShadow: "0 0 16px rgba(255,212,0,0.55)"
+            }}>50%</span>
+          </div>
+          <div style={{
+            marginTop: 8,
+            fontSize: 13.5,
+            color: "rgba(255,255,255,0.78)",
+            fontWeight: 500,
+            letterSpacing: 0.2,
+            textShadow: "0 1px 6px rgba(0,0,0,0.4)"
+          }}>
+            订阅旗舰版享专属积分与全部图像生成模型，优惠即将结束
+          </div>
+        </div>
+
+        {/* Countdown — bare digits with stacked unit labels */}
+        <div style={{
+          display: "inline-flex",
+          alignItems: "flex-start",
+          gap: 26,
+          paddingLeft: 32,
+          borderLeft: "1px solid rgba(255,255,255,0.18)"
+        }}>
+          {cells.map(c => (
+            <div key={c.label} style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              minWidth: 52
+            }}>
+              <div style={{
+                fontFamily: '"JetBrains Mono", "SF Mono", ui-monospace, monospace',
+                fontSize: 34,
+                fontWeight: 700,
+                color: "#fff",
+                lineHeight: 1,
+                letterSpacing: 1,
+                fontVariantNumeric: "tabular-nums",
+                textShadow: "0 2px 12px rgba(0,0,0,0.55)"
+              }}>{c.value}</div>
+              <div style={{
+                marginTop: 8,
+                fontSize: 11.5,
+                fontWeight: 500,
+                color: "rgba(255,255,255,0.78)",
+                letterSpacing: 2
+              }}>{c.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function PricingModal({ tweaks, onClose }) {
   const [billing, setBilling] = React.useState(tweaks.billing);
   const [creditOpen, setCreditOpen] = React.useState(false);
@@ -661,28 +802,8 @@ function PricingModal({ tweaks, onClose }) {
       overflow: "hidden"
     }} data-screen-label="Pricing Modal">
 
-      {/* Promo banner — pinned to the top of the modal. */}
-      <div style={{
-        padding: "10px 64px 10px 20px",
-        textAlign: "center",
-        fontSize: 13,
-        fontWeight: 600,
-        color: "#fff",
-        letterSpacing: 0.2,
-        background: "linear-gradient(90deg, #5a4cb8 0%, #4f7fd0 35%, #3f9fd8 65%, #4dbac4 100%)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 14,
-        flexWrap: "wrap"
-      }}>
-        <span style={{ display: "inline-flex", alignItems: "center" }}>
-          <span aria-hidden="true" style={{ marginRight: 8 }}>🎉</span>
-          <span>周年庆限时特惠：按年订阅最高立省 <span style={{ color: "#ffd400" }}>50%</span></span>
-        </span>
-        <PromoCountdown />
-      </div>
+      {/* Poster-style promo banner at the top of the modal. */}
+      <PromoPoster onClose={onClose} />
 
       {/* Close */}
       <button
@@ -1618,3 +1739,4 @@ function UsageComparison({ billing, highlightId, currentPlanId, accentToken }) {
 }
 
 window.PricingModal = PricingModal;
+window.PromoCountdown = PromoCountdown;

@@ -752,9 +752,176 @@ function GalleryCard({ item, featured }) {
   );
 }
 
+function PromoBanner({ onUpgrade, onClose }) {
+  // Live countdown — 7 days from first mount. Pure visual; doesn't persist.
+  const target = React.useMemo(() => Date.now() + (6 * 24 + 8) * 3600 * 1000, []);
+  const [now, setNow] = React.useState(Date.now());
+  React.useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const diff = Math.max(0, target - now);
+  const d = Math.floor(diff / (24 * 3600 * 1000));
+  const h = Math.floor((diff / (3600 * 1000)) % 24);
+  const m = Math.floor((diff / (60 * 1000)) % 60);
+  const s = Math.floor((diff / 1000) % 60);
+  const pad = n => String(n).padStart(2, "0");
+
+  const unitBox = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    minWidth: 44
+  };
+  const digitStyle = {
+    fontFamily: '"JetBrains Mono", "SF Mono", ui-monospace, monospace',
+    fontSize: 22,
+    fontWeight: 700,
+    color: "#fff",
+    lineHeight: 1,
+    letterSpacing: 0.5,
+    fontVariantNumeric: "tabular-nums",
+    textShadow: "0 1px 2px rgba(0,0,0,0.25)"
+  };
+  const labelStyle = {
+    marginTop: 4,
+    fontSize: 11,
+    fontWeight: 500,
+    color: "rgba(255,255,255,0.75)",
+    letterSpacing: 1
+  };
+
+  return (
+    <div style={{
+      position: "relative",
+      padding: "12px 28px",
+      background:
+        "radial-gradient(120% 180% at 0% 50%, #7b48ff 0%, transparent 55%), " +
+        "radial-gradient(120% 180% at 100% 50%, #34d6c2 0%, transparent 55%), " +
+        "linear-gradient(90deg, #5b3df0 0%, #4a7be0 50%, #2bb8c8 100%)",
+      overflow: "hidden",
+      borderBottom: "1px solid rgba(255,255,255,0.08)"
+    }}>
+      {/* Subtle highlight glints */}
+      <div aria-hidden="true" style={{
+        position: "absolute", inset: 0,
+        backgroundImage:
+          "radial-gradient(2px 2px at 18% 30%, rgba(255,255,255,0.5), transparent 60%), " +
+          "radial-gradient(1.5px 1.5px at 72% 70%, rgba(255,255,255,0.45), transparent 60%), " +
+          "radial-gradient(1.5px 1.5px at 55% 20%, rgba(255,255,255,0.4), transparent 60%)",
+        pointerEvents: "none",
+        opacity: 0.7
+      }} />
+
+      <div style={{
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 24,
+        maxWidth: 1400,
+        margin: "0 auto"
+      }}>
+        {/* Copy */}
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontSize: 20, lineHeight: 1 }}>🎉</span>
+          <span style={{
+            fontSize: 15,
+            fontWeight: 700,
+            color: "#fff",
+            letterSpacing: 0.2
+          }}>
+            周年庆限时特惠：按年订阅最高立省{" "}
+            <span style={{
+              color: "#ffd400",
+              fontSize: 17,
+              fontWeight: 800,
+              textShadow: "0 0 12px rgba(255,212,0,0.45)"
+            }}>50%</span>
+          </span>
+        </div>
+
+        {/* Countdown — Image 2 style: digit card + unit label below */}
+        <div style={{
+          display: "inline-flex",
+          alignItems: "flex-start",
+          gap: 6,
+          padding: "8px 14px",
+          borderRadius: 12,
+          background: "rgba(10, 10, 30, 0.32)",
+          border: "1px solid rgba(255,255,255,0.16)",
+          backdropFilter: "blur(6px)"
+        }}>
+          <div style={unitBox}>
+            <div style={digitStyle}>{pad(d)}</div>
+            <div style={labelStyle}>天</div>
+          </div>
+          <div style={{ ...digitStyle, opacity: 0.55, paddingTop: 1 }}>:</div>
+          <div style={unitBox}>
+            <div style={digitStyle}>{pad(h)}</div>
+            <div style={labelStyle}>时</div>
+          </div>
+          <div style={{ ...digitStyle, opacity: 0.55, paddingTop: 1 }}>:</div>
+          <div style={unitBox}>
+            <div style={digitStyle}>{pad(m)}</div>
+            <div style={labelStyle}>分</div>
+          </div>
+          <div style={{ ...digitStyle, opacity: 0.55, paddingTop: 1 }}>:</div>
+          <div style={unitBox}>
+            <div style={digitStyle}>{pad(s)}</div>
+            <div style={labelStyle}>秒</div>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <button
+          onClick={onUpgrade}
+          style={{
+            padding: "9px 20px",
+            borderRadius: 999,
+            border: "none",
+            background: "#fff",
+            color: "#5b3df0",
+            fontSize: 13,
+            fontWeight: 700,
+            fontFamily: "inherit",
+            cursor: "pointer",
+            boxShadow: "0 6px 18px -8px rgba(0,0,0,0.45)"
+          }}
+        >立即升级</button>
+      </div>
+
+      {/* Close */}
+      <button
+        onClick={onClose}
+        aria-label="关闭"
+        style={{
+          position: "absolute",
+          right: 14,
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: 28, height: 28,
+          borderRadius: 8,
+          border: "none",
+          background: "rgba(0,0,0,0.18)",
+          color: "rgba(255,255,255,0.85)",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 3 L9 9 M9 3 L3 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
+      </button>
+    </div>
+  );
+}
+
 function Homepage({ onOpenPricing, onOpenAccount, onOpenInvite }) {
+  const [promoOpen, setPromoOpen] = React.useState(true);
   return (
     <div style={homeStyles.page}>
+      {promoOpen && <PromoBanner onUpgrade={onOpenPricing} onClose={() => setPromoOpen(false)} />}
       <TopNav onUpgrade={onOpenPricing} onOpenCredits={onOpenPricing} onOpenAccount={onOpenAccount} onOpenInvite={onOpenInvite} />
       <Hero onUpgrade={onOpenPricing} />
       <Gallery />
