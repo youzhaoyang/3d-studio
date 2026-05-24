@@ -5,6 +5,8 @@ const PLANS = [
   {
     id: "free",
     name: "免费版",
+    tagline: "无需付费即可体验，公开模型 + 基础生成",
+    kpi: { credits: "200", concurrent: "1" },
     tone: "neutral",
     priceMonthly: 0,
     priceYearly: 0,
@@ -38,6 +40,8 @@ const PLANS = [
   {
     id: "starter",
     name: "入门版",
+    tagline: "轻度使用 · 解锁多视角与批量生成",
+    kpi: { credits: "750", concurrent: "3" },
     tone: "starter",
     priceMonthly: 5.0,
     priceYearly: 2.5,
@@ -78,6 +82,8 @@ const PLANS = [
   {
     id: "pro",
     name: "专业版",
+    tagline: "个人创作者 · 最高排队 + 无限下载",
+    kpi: { credits: "3,000", concurrent: "10" },
     tone: "pro",
     priceMonthly: 19.9,
     priceYearly: 9.95,
@@ -118,6 +124,8 @@ const PLANS = [
   {
     id: "ultra",
     name: "旗舰版",
+    tagline: "高频生产 / 商业 · 专属队列 + 永久历史",
+    kpi: { credits: "25,000", concurrent: "100" },
     tone: "ultra",
     priceMonthly: 89.9,
     priceYearly: 44.95,
@@ -162,6 +170,8 @@ const PLANS = [
   {
     id: "team",
     name: "团队版",
+    tagline: "多人协作 · 共享工作区 + 集中计费",
+    kpi: { credits: "15,000", concurrent: "200" },
     tone: "team",
     priceMonthly: 109.9,
     priceYearly: 54.95,
@@ -339,16 +349,24 @@ function PlanCard({ plan, billing, highlighted, compact, accentToken }) {
     : accentToken;
   const ctaColor = plan.ctaState === "disabled" ? "rgba(255,255,255,0.45)" : "#0a0a0c";
 
+  // Two KPI badges per card — credits & concurrent tasks. These two
+  // numbers drive ~80% of the buy/skip decision; the rest sits in the
+  // full feature matrix below.
+  const kpis = [
+    { label: "积分 / 月", value: plan.kpi?.credits ?? "—" },
+    { label: "并发任务", value: plan.kpi?.concurrent ?? "—" }
+  ];
+
   return (
     <div style={{
       position: "relative",
-      borderRadius: 18,
+      borderRadius: 16,
       border: highlighted ? "1px solid rgba(178,136,255,0.45)" : "1px solid var(--border)",
       background: cardBg,
-      padding: compact ? "20px 18px 18px" : "24px 22px 22px",
+      padding: compact ? "16px 14px 14px" : "20px 16px 16px",
       display: "flex",
       flexDirection: "column",
-      gap: compact ? 10 : 13,
+      gap: compact ? 9 : 11,
       boxShadow: highlighted ? "0 20px 60px -30px rgba(178,136,255,0.55)" : "none",
       overflow: "hidden"
     }}>
@@ -361,213 +379,217 @@ function PlanCard({ plan, billing, highlighted, compact, accentToken }) {
         }} />
       )}
 
-      {/* === Fixed-height top block: name, price, payments/seat, CTA ===
-          Locked height so the CTA button aligns horizontally across all cards. */}
+      {/* Name + badge + savings — single compact row */}
+      <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", position: "relative", zIndex: 1 }}>
+        <div style={{
+          fontSize: 16,
+          fontWeight: 700,
+          color: accent,
+          letterSpacing: 0.2
+        }}>{plan.name}</div>
+        {plan.badge && (
+          <span style={{
+            fontSize: 10,
+            padding: "2px 6px",
+            borderRadius: 5,
+            background: "linear-gradient(90deg,#6dffb8,#8effd6)",
+            color: "#0a0a0c",
+            fontWeight: 700,
+            letterSpacing: 0.3
+          }}>{plan.badge}</span>
+        )}
+        {plan.savings && (
+          <span style={{
+            marginLeft: "auto",
+            fontSize: 10,
+            padding: "2px 6px",
+            borderRadius: 5,
+            background: "rgba(255,212,0,0.12)",
+            color: "#ffd400",
+            fontWeight: 600,
+            letterSpacing: 0.2,
+            border: "1px solid rgba(255,212,0,0.25)"
+          }}>省 {plan.savings}%</span>
+        )}
+      </div>
+
+      {/* Tagline — who this plan is for. min-height keeps card heights aligned. */}
       <div style={{
+        fontSize: 11.5,
+        color: "var(--text-mute)",
+        lineHeight: 1.45,
         position: "relative",
         zIndex: 1,
-        display: "flex",
-        flexDirection: "column",
-        gap: compact ? 10 : 14,
-        minHeight: compact ? 230 : 264
-      }}>
-        {/* Top row: name + badge */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{
-            fontSize: 18,
+        minHeight: 33
+      }}>{plan.tagline || " "}</div>
+
+      {/* Price */}
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 3, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>$</span>
+          <span style={{
+            fontSize: compact ? 26 : 32,
             fontWeight: 700,
-            color: accent,
-            letterSpacing: 0.2
-          }}>{plan.name}</div>
-          {plan.badge && (
+            letterSpacing: -0.8,
+            lineHeight: 1
+          }}>{intP}</span>
+          <span style={{ fontSize: 14, color: "var(--text-dim)", fontWeight: 500 }}>{decP}</span>
+          <span style={{ fontSize: 11, color: "var(--text-mute)", marginLeft: 2 }}>
+            / 月{plan.perSeat ? " / 席" : ""}
+          </span>
+          {showStrike && (
             <span style={{
               fontSize: 11,
-              padding: "3px 8px",
-              borderRadius: 6,
-              background: "linear-gradient(90deg,#6dffb8,#8effd6)",
-              color: "#0a0a0c",
-              fontWeight: 700,
-              letterSpacing: 0.4
-            }}>{plan.badge}</span>
-          )}
-          {plan.savings && (
-            <span style={{
-              marginLeft: "auto",
-              fontSize: 11,
-              padding: "3px 8px",
-              borderRadius: 6,
-              background: "rgba(255,212,0,0.12)",
-              color: "#ffd400",
-              fontWeight: 600,
-              letterSpacing: 0.2,
-              border: "1px solid rgba(255,212,0,0.25)"
-            }}>立省 {plan.savings}%</span>
+              color: "var(--text-mute)",
+              textDecoration: "line-through",
+              marginLeft: 4
+            }}>${listPrice.toFixed(2)}</span>
           )}
         </div>
-
-        {/* Price */}
-        <div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 18, fontWeight: 600, color: "var(--text)" }}>$</span>
-            <span style={{
-              fontSize: compact ? 38 : 44,
-              fontWeight: 700,
-              letterSpacing: -1.2,
-              lineHeight: 1
-            }}>{intP}</span>
-            <span style={{ fontSize: 18, color: "var(--text-dim)", fontWeight: 500 }}>{decP}</span>
-            <span style={{ fontSize: 13, color: "var(--text-mute)", marginLeft: 4 }}>
-              / 月{plan.perSeat ? " / 席位" : ""}
-            </span>
-            {showStrike && (
-              <span style={{
-                fontSize: 13,
-                color: "var(--text-mute)",
-                textDecoration: "line-through",
-                marginLeft: 6
-              }}>${listPrice.toFixed(2)}</span>
-            )}
-          </div>
-          <div style={{ marginTop: 8, fontSize: 12, color: "var(--text-mute)", fontFamily: "JetBrains Mono, monospace", minHeight: 16 }}>
-            {billing === "yearly" && plan.yearlyTotal !== null && plan.priceYearly > 0
-              ? `按年计费: $${plan.yearlyTotal.toLocaleString()}/年`
-              : "\u00A0"}
-          </div>
-        </div>
-
-        {/* Bottom-anchored: payments/seat + CTA. marginTop:auto pushes them to the
-            bottom of the fixed-height block so CTAs share a baseline. */}
-        <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: compact ? 8 : 10 }}>
-          {/* Payments / Seat picker / spacer — reserve consistent height */}
-          {plan.payments ? (
-            <div style={{ display: "flex", gap: 8 }}>
-              {plan.payments.map(p => {
-                const active = payment === p;
-                return (
-                  <button
-                    key={p}
-                    onClick={() => setPayment(p)}
-                    style={{
-                      flex: 1,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                      padding: "9px 10px",
-                      borderRadius: 10,
-                      border: active ? "1px solid var(--border-strong)" : "1px solid var(--border)",
-                      background: active ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.02)",
-                      color: active ? "#fff" : "var(--text-dim)",
-                      fontSize: 12,
-                      fontWeight: 500,
-                      cursor: "pointer",
-                      fontFamily: "inherit",
-                      transition: "all .15s ease"
-                    }}
-                  >
-                    <span style={{
-                      width: 14,
-                      height: 14,
-                      borderRadius: 999,
-                      border: active ? "4px solid #ffd400" : "1.5px solid rgba(255,255,255,0.25)",
-                      background: active ? "#0a0a0c" : "transparent",
-                      boxSizing: "border-box"
-                    }} />
-                    {p}
-                  </button>
-                );
-              })}
-            </div>
-          ) : plan.seatPicker ? (
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "10px 14px",
-              borderRadius: 10,
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid var(--border)"
-            }}>
-              <span style={{ fontSize: 13, color: "var(--text-dim)" }}>席位数</span>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <button onClick={() => setSeats(Math.max(1, seats - 1))} style={iconBtnStyle}>−</button>
-                <span style={{ fontSize: 15, fontWeight: 600, minWidth: 20, textAlign: "center" }}>{seats}</span>
-                <button onClick={() => setSeats(seats + 1)} style={iconBtnStyle}>+</button>
-              </div>
-            </div>
-          ) : (
-            <div style={{ height: 40 }} aria-hidden="true" />
-          )}
-
-          {/* CTA */}
-          <button
-            disabled={plan.ctaState === "disabled"}
-            style={{
-              padding: "12px 16px",
-              borderRadius: 12,
-              border: "none",
-              background: ctaBg,
-              color: ctaColor,
-              fontWeight: 700,
-              fontSize: 14,
-              cursor: plan.ctaState === "disabled" ? "default" : "pointer",
-              fontFamily: "inherit",
-              letterSpacing: 0.3,
-              transition: "transform .12s ease, filter .12s ease"
-            }}
-            onMouseEnter={e => { if (plan.ctaState !== "disabled") e.currentTarget.style.filter = "brightness(1.06)"; }}
-            onMouseLeave={e => { e.currentTarget.style.filter = "brightness(1)"; }}
-          >
-            {plan.cta}
-          </button>
+        <div style={{ marginTop: 4, fontSize: 10.5, color: "var(--text-mute)", fontFamily: "JetBrains Mono, monospace", minHeight: 14 }}>
+          {billing === "yearly" && plan.yearlyTotal !== null && plan.priceYearly > 0
+            ? `按年 $${plan.yearlyTotal.toLocaleString()}/年`
+            : " "}
         </div>
       </div>
 
-      {/* Perk callout */}
-      {plan.perk && (
+      {/* KPI badges — the two numbers that decide buy/skip at a glance */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: 6,
+        position: "relative",
+        zIndex: 1
+      }}>
+        {kpis.map((kpi, i) => (
+          <div key={i} style={{
+            padding: "8px 4px",
+            borderRadius: 8,
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid var(--border)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 1
+          }}>
+            <div style={{
+              fontSize: 15,
+              fontWeight: 700,
+              color: accent,
+              letterSpacing: -0.3,
+              lineHeight: 1.1,
+              fontFamily: "JetBrains Mono, monospace"
+            }}>{kpi.value}</div>
+            <div style={{ fontSize: 10, color: "var(--text-mute)", letterSpacing: 0.2 }}>{kpi.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Perk callout — only shown for plans with a perk. Reserve a tiny
+          spacer otherwise so card heights stay close. */}
+      {plan.perk ? (
         <div style={{
           display: "flex",
-          gap: 10,
-          padding: "10px 12px",
-          borderRadius: 10,
+          gap: 6,
+          padding: "7px 9px",
+          borderRadius: 8,
           background: "rgba(255,255,255,0.03)",
           border: "1px dashed rgba(255,255,255,0.1)",
           position: "relative",
           zIndex: 1
         }}>
           <div style={{ color: accent, flexShrink: 0, marginTop: 1 }}><GiftIcon /></div>
-          <div style={{ fontSize: 12, color: "var(--text-dim)", lineHeight: 1.5 }}>{plan.perk}</div>
+          <div style={{ fontSize: 11, color: "var(--text-dim)", lineHeight: 1.4 }}>{plan.perk}</div>
         </div>
+      ) : (
+        <div style={{ height: 0 }} aria-hidden="true" />
       )}
 
-      <div style={{ height: 1, background: "var(--border)", margin: "2px 0", position: "relative", zIndex: 1 }} />
-
-      {/* Credits */}
-      <div style={{ position: "relative", zIndex: 1 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
-          <span style={{ fontSize: 12, color: "var(--text-mute)", textTransform: "uppercase", letterSpacing: 0.6, fontWeight: 600 }}>积分</span>
-          <InfoIcon />
-        </div>
-        <Feature accent={accent} text={plan.credits} bold />
-        {plan.extra && <div style={{ marginTop: 8 }}><Feature accent={accent} text={plan.extra} muted /></div>}
-      </div>
-
-      {/* Sections */}
-      {plan.sections.map((sec, i) => (
-        <div key={i} style={{ position: "relative", zIndex: 1 }}>
-          <div style={{
-            fontSize: 12,
-            color: "var(--text-mute)",
-            textTransform: "uppercase",
-            letterSpacing: 0.6,
-            fontWeight: 600,
-            marginBottom: 10
-          }}>{sec.title}</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {sec.items.map((item, j) => <Feature key={j} accent={accent} text={item} />)}
+      {/* Bottom-anchored: payments/seat + CTA. marginTop:auto pushes them
+          to the bottom so CTAs share a baseline across all 5 cards. */}
+      <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: 6, position: "relative", zIndex: 1 }}>
+        {plan.payments ? (
+          <div style={{ display: "flex", gap: 5 }}>
+            {plan.payments.map(p => {
+              const active = payment === p;
+              return (
+                <button
+                  key={p}
+                  onClick={() => setPayment(p)}
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 5,
+                    padding: "7px 4px",
+                    borderRadius: 8,
+                    border: active ? "1px solid var(--border-strong)" : "1px solid var(--border)",
+                    background: active ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.02)",
+                    color: active ? "#fff" : "var(--text-dim)",
+                    fontSize: 11,
+                    fontWeight: 500,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                    transition: "all .15s ease"
+                  }}
+                >
+                  <span style={{
+                    width: 11,
+                    height: 11,
+                    borderRadius: 999,
+                    border: active ? "3px solid #ffd400" : "1.5px solid rgba(255,255,255,0.25)",
+                    background: active ? "#0a0a0c" : "transparent",
+                    boxSizing: "border-box"
+                  }} />
+                  {p}
+                </button>
+              );
+            })}
           </div>
-        </div>
-      ))}
+        ) : plan.seatPicker ? (
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "6px 10px",
+            borderRadius: 8,
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid var(--border)"
+          }}>
+            <span style={{ fontSize: 11.5, color: "var(--text-dim)" }}>席位</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <button onClick={() => setSeats(Math.max(1, seats - 1))} style={iconBtnStyle}>−</button>
+              <span style={{ fontSize: 13, fontWeight: 600, minWidth: 16, textAlign: "center" }}>{seats}</span>
+              <button onClick={() => setSeats(seats + 1)} style={iconBtnStyle}>+</button>
+            </div>
+          </div>
+        ) : (
+          <div style={{ height: 30 }} aria-hidden="true" />
+        )}
+
+        {/* CTA */}
+        <button
+          disabled={plan.ctaState === "disabled"}
+          style={{
+            padding: "10px 10px",
+            borderRadius: 10,
+            border: "none",
+            background: ctaBg,
+            color: ctaColor,
+            fontWeight: 700,
+            fontSize: 13,
+            cursor: plan.ctaState === "disabled" ? "default" : "pointer",
+            fontFamily: "inherit",
+            letterSpacing: 0.3,
+            transition: "transform .12s ease, filter .12s ease"
+          }}
+          onMouseEnter={e => { if (plan.ctaState !== "disabled") e.currentTarget.style.filter = "brightness(1.06)"; }}
+          onMouseLeave={e => { e.currentTarget.style.filter = "brightness(1)"; }}
+        >
+          {plan.cta}
+        </button>
+      </div>
     </div>
   );
 }
@@ -1511,81 +1533,138 @@ function FAQSection() {
   );
 }
 
-// Per-month generation counts derived from each plan's monthly credit
-// budget divided by the model's credit cost (floor). Numbers below use
-// the credit budgets defined in PLANS: free=200, starter=750, pro=3000,
-// ultra=25000, team=15000. "perk" tags surface the "free daily quota" /
-// "unlimited" callouts from the Ultra and Team plan perks.
+// Complete benefit matrix — the source of truth for "which plan do I need?".
+// Cards above only show price + 2 KPIs + perk; everything else lives here.
+// Groups are ordered from least → most differentiating so users can scan
+// price first, then progressively detailed capabilities.
 const USAGE_GROUPS = [
   {
-    title: "积分",
+    title: "💰 Price · 价格",
     note: "",
     rows: [
       {
-        name: "积分",
+        name: "Monthly",
+        sub: "月付价格",
+        counts: { free: "$0.00", starter: "$5.00", pro: "$19.90", ultra: "$89.90", team: "$109.90" }
+      }
+    ]
+  },
+  {
+    title: "⚡ Credits · 积分",
+    note: "",
+    rows: [
+      {
+        name: "Credits / Month",
         sub: "每月发放，订阅周期内有效",
         counts: { free: "200", starter: "750", pro: "3,000", ultra: "25,000", team: "15,000" }
       },
       {
-        name: "积分折扣",
+        name: "Concurrent Tasks",
+        sub: "可同时进行的生成任务数",
+        counts: { free: "1", starter: "3", pro: "10", ultra: "100", team: "200" }
+      },
+      {
+        name: "积分充值折扣",
         sub: "购买积分包时的会员折扣",
-        counts: { free: "×", starter: "×", pro: "×", ultra: "10% 积分充值折扣", team: "10% 积分充值折扣" }
+        counts: { free: "—", starter: "—", pro: "—", ultra: "10% off", team: "10% off" }
       }
     ]
   },
   {
-    title: "3D 模型",
-    note: "3D 模型支持多视角输入、智能网格、分部件等高级能力",
+    title: "🎨 Model Generation Privileges · 模型生成",
+    note: "",
     rows: [
       {
-        name: "Mesh · 标准",
-        sub: "25 积分 / 模型 · 标准几何精度",
-        counts: { free: "8 个", starter: "30 个", pro: "120 个", ultra: "1,000 个", team: "600 个" }
+        name: "Multi-view to 3D",
+        sub: "多视角图像合成 3D 模型",
+        counts: { free: "×", starter: "✓", pro: "✓", ultra: "✓", team: "✓" }
       },
       {
-        name: "Mesh · Pro",
-        sub: "50 积分 / 模型 · 超清几何精度",
-        counts: { free: "4 个", starter: "15 个", pro: "60 个", ultra: "500 个", team: "300 个" }
+        name: "Generate model in parts",
+        sub: "分部件生成，便于二次编辑",
+        counts: { free: "×", starter: "✓", pro: "✓", ultra: "✓", team: "✓" }
       },
       {
-        name: "Mesh · Ultra HD",
-        sub: "100 积分 / 模型 · 超清几何 + 智能网格",
-        counts: { free: "2 个", starter: "7 个", pro: "30 个", ultra: "250 个", team: "150 个" }
+        name: "Batch Generation & Export",
+        sub: "批量生成与批量导出",
+        counts: { free: "×", starter: "10 / 批", pro: "10 / 批", ultra: "30 / 批", team: "30 / 批" }
       },
       {
-        name: "Mesh · 多视角转 3D",
-        sub: "75 积分 / 模型 · 多视角输入",
-        counts: { free: "2 个", starter: "10 个", pro: "40 个", ultra: "333 个", team: "200 个" }
+        name: "Queue Priority",
+        sub: "生成任务排队优先级",
+        counts: { free: "标准", starter: "中等", pro: "最高", ultra: "专属 · 跳过高峰", team: "专属 · 跳过高峰" }
+      },
+      {
+        name: "Smart Mesh",
+        sub: "智能拓扑网格",
+        counts: { free: "1 天试用", starter: "✓", pro: "✓", ultra: "✓", team: "✓" }
+      },
+      {
+        name: "Free Retry",
+        sub: "失败 / 不满意时免费重试",
+        counts: { free: "×", starter: "1 次", pro: "3 次", ultra: "无限", team: "无限" }
+      },
+      {
+        name: "Asset License",
+        sub: "授权范围",
+        counts: { free: "公开 · CC BY 4.0", starter: "私有 · 可商用", pro: "私有 · 可商用", ultra: "私有 · 可商用", team: "私有 · 可商用" }
+      },
+      {
+        name: "Tripo v3.0 Ultra",
+        sub: "旗舰几何精度模型",
+        counts: { free: "×", starter: "✓", pro: "✓", ultra: "✓", team: "✓" }
+      },
+      {
+        name: "Free Pro Refine",
+        sub: "免费专业精修",
+        counts: { free: "×", starter: "×", pro: "×", ultra: "3 次", team: "×" }
       }
     ]
   },
   {
-    title: "图片模型",
-    note: "图像生成支持参考图、放大、风格化等多种模式",
+    title: "✨ Exclusive Features · 专属功能",
+    note: "",
     rows: [
       {
-        name: "Studio Image · 标准 1K",
-        sub: "1 积分 / 张 · 低质量 · 无参考图",
-        counts: { free: "200 张", starter: "750 张", pro: "3,000 张", ultra: "25,000 张", team: "15,000 张" },
+        name: "Model Edit History",
+        sub: "可回溯的模型编辑历史",
+        counts: { free: "1 天", starter: "3 天", pro: "7 天", ultra: "永久", team: "永久" }
+      },
+      {
+        name: "Models Stored",
+        sub: "可保存的模型数量",
+        counts: { free: "10", starter: "无限", pro: "无限", ultra: "无限", team: "无限" }
+      },
+      {
+        name: "Model Downloads",
+        sub: "每月模型下载次数",
+        counts: { free: "15", starter: "45", pro: "无限", ultra: "无限", team: "无限" }
+      },
+      {
+        name: "Early Access",
+        sub: "抢先体验高级内测功能",
+        counts: { free: "×", starter: "×", pro: "×", ultra: "✓", team: "✓" }
+      },
+      {
+        name: "Image Generation",
+        sub: "图像生成模型权限",
+        counts: { free: "Limited", starter: "解锁全部", pro: "解锁全部", ultra: "解锁全部 + 每日 20 张免费 · 80% 折扣", team: "不限量" },
         tags: { team: "不限量" }
       },
       {
-        name: "Studio Image · 高清 2K",
-        sub: "2 积分 / 张 · 低质量 · 无参考图",
-        counts: { free: "100 张", starter: "375 张", pro: "1,500 张", ultra: "12,500 张", team: "7,500 张" },
-        tags: { team: "不限量" }
+        name: "Shared Workspace & Assets",
+        sub: "团队共享工作区与资产",
+        counts: { free: "×", starter: "×", pro: "×", ultra: "×", team: "✓" }
       },
       {
-        name: "Studio Image · 超清 4K",
-        sub: "3 积分 / 张 · 高质量 · 含参考图",
-        counts: { free: "66 张", starter: "250 张", pro: "1,000 张", ultra: "8,333 张", team: "5,000 张" },
-        tags: { team: "不限量" }
+        name: "Centralized Billing & Admin",
+        sub: "集中计费与管理",
+        counts: { free: "×", starter: "×", pro: "×", ultra: "×", team: "✓" }
       },
       {
-        name: "Studio Image · 风格化 2K",
-        sub: "8 积分 / 张 · 中质量 · 无参考图",
-        counts: { free: "25 张", starter: "93 张", pro: "375 张", ultra: "3,125 张", team: "1,875 张" },
-        tags: { team: "每月不限量" }
+        name: "More team features",
+        sub: "更多团队功能持续上线",
+        counts: { free: "×", starter: "×", pro: "×", ultra: "×", team: "✓" }
       }
     ]
   }
@@ -1602,8 +1681,11 @@ function UsageComparison({ billing, highlightId, currentPlanId, accentToken }) {
     <div style={{ padding: "0 32px 36px" }}>
       <div style={{ textAlign: "center", marginBottom: 28 }}>
         <h3 style={{ margin: 0, fontSize: 24, fontWeight: 700, letterSpacing: -0.3 }}>
-          每月生成次数
+          完整权益对比
         </h3>
+        <p style={{ margin: "10px auto 0", fontSize: 13, color: "var(--text-mute)", maxWidth: 560, lineHeight: 1.6 }}>
+          上方卡片只显示定价与关键指标，完整权益对比请看下表
+        </p>
       </div>
 
       <div style={{
