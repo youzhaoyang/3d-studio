@@ -101,6 +101,7 @@ function App() {
             onChange={v => setTweak("highlight", v)}
             options={[
               { value: "none", label: "不强调" },
+              { value: "starter", label: "入门版" },
               { value: "pro", label: "专业版" },
               { value: "ultra", label: "旗舰版（默认）" },
               { value: "team", label: "团队版" }

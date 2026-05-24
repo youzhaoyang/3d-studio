@@ -13,7 +13,7 @@ const PLANS = [
     yearlyTotal: null,
     cta: "包含",
     ctaState: "disabled",
-    credits: "每月 [[200]] 积分（最多 [[8]] 个模型）",
+    credits: "每月 [[200]] 积分",
     sections: [
       {
         title: "模型生成权限",
@@ -29,8 +29,48 @@ const PLANS = [
         items: [
           "[[1天]] 模型编辑历史",
           "存储 [[10]] 个模型",
-          "[[有限]] 的模型下载（每月最多下载 15 次 v2.5 模型）",
+          "[[有限]] 模型下载（每月最多 [[15]] 次）",
           "图像生成模型有限访问权限"
+        ]
+      }
+    ]
+  },
+  {
+    id: "starter",
+    name: "入门版",
+    tone: "starter",
+    priceMonthly: 5.0,
+    priceYearly: 2.5,
+    listPriceMonthly: 5.0,
+    listPriceYearly: 5.0,
+    yearlyTotal: 30,
+    savings: 50,
+    cta: "升级",
+    ctaState: "primary",
+    payments: ["Stripe", "PayPal"],
+    credits: "每月 [[750]] 积分",
+    sections: [
+      {
+        title: "模型生成权限",
+        items: [
+          "[[3]] 个并发任务",
+          "多视角转 3D",
+          "分部件生成",
+          "批量生成（每批最多 10 个模型）与批量导出",
+          "中等排队优先级",
+          "智能网格",
+          "每个模型 [[1]] 次免费重试",
+          "私有模型与商业用途",
+          "Tripo v3.0 Ultra 模型生成"
+        ]
+      },
+      {
+        title: "专属功能",
+        items: [
+          "[[3天]] 模型编辑历史",
+          "[[无限]] 模型存储",
+          "每月 [[45]] 次模型下载",
+          "解锁所有图像生成模型"
         ]
       }
     ]
@@ -39,16 +79,16 @@ const PLANS = [
     id: "pro",
     name: "专业版",
     tone: "pro",
-    priceMonthly: 139.92,
-    priceYearly: 84.0,
-    listPriceMonthly: 139.92,
-    listPriceYearly: 139.92,
-    yearlyTotal: 1007.4,
-    savings: 40,
+    priceMonthly: 19.9,
+    priceYearly: 9.95,
+    listPriceMonthly: 19.9,
+    listPriceYearly: 19.9,
+    yearlyTotal: 119.4,
+    savings: 50,
     cta: "当前套餐",
     ctaState: "disabled",
     payments: ["Stripe", "PayPal"],
-    credits: "每月 [[3000]] 积分（最多 [[120]] 个模型）",
+    credits: "每月 [[3000]] 积分",
     sections: [
       {
         title: "模型生成权限",
@@ -61,7 +101,7 @@ const PLANS = [
           "智能网格",
           "每个模型 [[3]] 次免费重试",
           "私有模型与商业用途",
-          "超清几何精度"
+          "Tripo v3.0 Ultra 模型生成"
         ]
       },
       {
@@ -79,19 +119,18 @@ const PLANS = [
     id: "ultra",
     name: "旗舰版",
     tone: "ultra",
-    priceMonthly: 629.0,
-    priceYearly: 314.5,
-    listPriceMonthly: 629.0,
-    listPriceYearly: 629.0,
-    yearlyTotal: 3774,
+    priceMonthly: 89.9,
+    priceYearly: 44.95,
+    listPriceMonthly: 89.9,
+    listPriceYearly: 89.9,
+    yearlyTotal: 539.4,
     savings: 50,
     badge: "Best Value",
     cta: "升级",
     ctaState: "primary",
     payments: ["Stripe", "PayPal"],
-    perk: "解锁所有图像生成模型，享受2折生成优惠，每日前 20 张图像生成免费",
-    credits: "每月 [[25000]] 积分（最多 [[1000]] 个模型）",
-    extra: "额外赠送 25000 积分（仅限首月，将于 3 天内发放）",
+    perk: "解锁所有图像生成模型，每日前 20 张免费，之后享 80% 积分折扣",
+    credits: "每月 [[25000]] 积分",
     sections: [
       {
         title: "模型生成权限",
@@ -104,18 +143,18 @@ const PLANS = [
           "智能网格",
           "每个模型 [[无限次]] 免费重试",
           "私有模型与商业用途",
-          "超清几何精度"
+          "Tripo v3.0 Ultra 模型生成",
+          "[[3]] 次免费专业精修"
         ]
       },
       {
         title: "专属功能",
         items: [
-          "[[3]] 次免费专业精修",
           "[[永久]] 模型编辑历史",
           "[[无限]] 模型存储",
           "[[无限]] 模型下载",
           "抢先体验高级内测功能",
-          "解锁所有图像生成模型，享受 2 折生成优惠，每日前 20 张图像生成免费"
+          "解锁所有图像生成模型 · 每日 20 张免费 · 之后 80% 积分折扣"
         ]
       }
     ]
@@ -124,17 +163,17 @@ const PLANS = [
     id: "team",
     name: "团队版",
     tone: "team",
-    priceMonthly: 769.0,
-    priceYearly: 384.5,
-    listPriceMonthly: 769.0,
-    listPriceYearly: 769.0,
-    yearlyTotal: 13842,
+    priceMonthly: 109.9,
+    priceYearly: 54.95,
+    listPriceMonthly: 109.9,
+    listPriceYearly: 109.9,
+    yearlyTotal: 659.4,
     savings: 50,
     perSeat: true,
     cta: "创建团队",
     ctaState: "primary",
     perk: "解锁所有图像生成模型，可无限免费生成",
-    credits: "每月 [[45000]] 积分（最多 [[1800]] 个模型）",
+    credits: "每月 [[15000]] 积分 / 席位",
     seatPicker: true,
     sections: [
       {
@@ -148,7 +187,7 @@ const PLANS = [
           "智能网格",
           "每个模型 [[无限次]] 免费重试",
           "私有模型与商业用途",
-          "超清几何精度"
+          "Tripo v3.0 Ultra 模型生成"
         ]
       },
       {
@@ -213,6 +252,7 @@ function GiftIcon() {
 function ToneAccent(tone) {
   const map = {
     neutral: "rgba(255,255,255,0.85)",
+    starter: "#7be0ff",
     pro: "#ffba5c",
     ultra: "#b288ff",
     team: "#6dffb8"
@@ -368,7 +408,7 @@ function PlanCard({ plan, billing, highlighted, compact, accentToken }) {
         {/* Price */}
         <div>
           <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 18, fontWeight: 600, color: "var(--text)" }}>¥</span>
+            <span style={{ fontSize: 18, fontWeight: 600, color: "var(--text)" }}>$</span>
             <span style={{
               fontSize: compact ? 38 : 44,
               fontWeight: 700,
@@ -385,12 +425,12 @@ function PlanCard({ plan, billing, highlighted, compact, accentToken }) {
                 color: "var(--text-mute)",
                 textDecoration: "line-through",
                 marginLeft: 6
-              }}>¥{listPrice.toFixed(2)}</span>
+              }}>${listPrice.toFixed(2)}</span>
             )}
           </div>
           <div style={{ marginTop: 8, fontSize: 12, color: "var(--text-mute)", fontFamily: "JetBrains Mono, monospace", minHeight: 16 }}>
             {billing === "yearly" && plan.yearlyTotal !== null && plan.priceYearly > 0
-              ? `按年计费: ¥${plan.yearlyTotal.toLocaleString()}/年`
+              ? `按年计费: $${plan.yearlyTotal.toLocaleString()}/年`
               : "\u00A0"}
           </div>
         </div>
@@ -835,12 +875,12 @@ function PricingModal({ tweaks, onClose }) {
       {/* Header — minimal or hero variant */}
       <Header style={tweaks.header_style} billing={billing} setBilling={setBilling} showSavingsChip={tweaks.show_savings_chip} onOpenCredits={() => setCreditOpen(true)} />
 
-      {/* Plans — Free card is narrower so the 3 paid plans get more room */}
+      {/* Plans — Free card is narrower so the 4 paid plans get more room */}
       <div style={{
-        padding: tweaks.compact ? "0 28px 28px" : "0 32px 32px",
+        padding: tweaks.compact ? "0 24px 28px" : "0 28px 32px",
         display: "grid",
-        gridTemplateColumns: "0.78fr 1.07fr 1.07fr 1.07fr",
-        gap: tweaks.compact ? 12 : 16
+        gridTemplateColumns: "0.82fr 1fr 1fr 1fr 1fr",
+        gap: tweaks.compact ? 10 : 14
       }}>
         {PLANS.map(plan => (
           <PlanCard
@@ -1258,7 +1298,7 @@ function CreditPackCard({ pack, accentToken }) {
     }}>
       <div>
         <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-          <span style={{ fontSize: 18, fontWeight: 600 }}>¥</span>
+          <span style={{ fontSize: 18, fontWeight: 600 }}>$</span>
           <span style={{ fontSize: 40, fontWeight: 700, letterSpacing: -1, lineHeight: 1 }}>
             {pack.price.toLocaleString()}
           </span>
@@ -1343,7 +1383,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "我可以免费使用 Studio 吗？",
-    a: "可以。免费版无需付费即可注册体验，每月获得 200 积分（最多 8 个模型），可使用公开模型生成与导出能力，部分高级功能（如智能网格、批量生成、私有模型）仅限付费档使用。"
+    a: "可以。免费版无需付费即可注册体验，每月获得 200 积分，可使用公开模型生成与导出能力，部分高级功能（如智能网格、批量生成、私有模型、Tripo v3.0 Ultra）仅限付费档使用。"
   },
   {
     q: "如何升级我的订阅计划？",
@@ -1371,7 +1411,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "哪个 Studio 方案适合我？",
-    a: "个人尝鲜建议从免费版开始；个人创作者推荐专业版，覆盖 10 并发与超清几何；高频生产者与商业用途推荐旗舰版，享 25000 积分 + 图像 2 折优惠；多人协作请选团队版，支持席位管理与共享资产。"
+    a: "个人尝鲜建议从免费版开始；轻度使用可选入门版（$5/月，750 积分 + 3 并发）；个人创作者推荐专业版（$19.9/月，3000 积分 + 10 并发 + 无限下载）；高频生产者与商业用途推荐旗舰版（$89.9/月，25000 积分 + 100 并发 + 每日 20 张图像免费 + 80% 积分折扣）；多人协作请选团队版（$109.9/月/席位，200 并发 + 共享工作区 + 集中计费）。"
   }
 ];
 
@@ -1472,10 +1512,10 @@ function FAQSection() {
 }
 
 // Per-month generation counts derived from each plan's monthly credit
-// budget divided by the model's credit cost (floor). Numbers above use
-// the credit budgets defined in PLANS: free=200, pro=3000, ultra=25000,
-// team=45000. "perk" tags surface the "free daily quota" / "unlimited"
-// callouts from the Ultra and Team plan perks.
+// budget divided by the model's credit cost (floor). Numbers below use
+// the credit budgets defined in PLANS: free=200, starter=750, pro=3000,
+// ultra=25000, team=15000. "perk" tags surface the "free daily quota" /
+// "unlimited" callouts from the Ultra and Team plan perks.
 const USAGE_GROUPS = [
   {
     title: "积分",
@@ -1484,12 +1524,12 @@ const USAGE_GROUPS = [
       {
         name: "积分",
         sub: "每月发放，订阅周期内有效",
-        counts: { free: "200", pro: "3,000", ultra: "25,000", team: "45,000" }
+        counts: { free: "200", starter: "750", pro: "3,000", ultra: "25,000", team: "15,000" }
       },
       {
         name: "积分折扣",
         sub: "购买积分包时的会员折扣",
-        counts: { free: "×", pro: "×", ultra: "10% 积分充值折扣", team: "10% 积分充值折扣" }
+        counts: { free: "×", starter: "×", pro: "×", ultra: "10% 积分充值折扣", team: "10% 积分充值折扣" }
       }
     ]
   },
@@ -1500,22 +1540,22 @@ const USAGE_GROUPS = [
       {
         name: "Mesh · 标准",
         sub: "25 积分 / 模型 · 标准几何精度",
-        counts: { free: "8 个", pro: "120 个", ultra: "1,000 个", team: "1,800 个" }
+        counts: { free: "8 个", starter: "30 个", pro: "120 个", ultra: "1,000 个", team: "600 个" }
       },
       {
         name: "Mesh · Pro",
         sub: "50 积分 / 模型 · 超清几何精度",
-        counts: { free: "4 个", pro: "60 个", ultra: "500 个", team: "900 个" }
+        counts: { free: "4 个", starter: "15 个", pro: "60 个", ultra: "500 个", team: "300 个" }
       },
       {
         name: "Mesh · Ultra HD",
         sub: "100 积分 / 模型 · 超清几何 + 智能网格",
-        counts: { free: "2 个", pro: "30 个", ultra: "250 个", team: "450 个" }
+        counts: { free: "2 个", starter: "7 个", pro: "30 个", ultra: "250 个", team: "150 个" }
       },
       {
         name: "Mesh · 多视角转 3D",
         sub: "75 积分 / 模型 · 多视角输入",
-        counts: { free: "2 个", pro: "40 个", ultra: "333 个", team: "600 个" }
+        counts: { free: "2 个", starter: "10 个", pro: "40 个", ultra: "333 个", team: "200 个" }
       }
     ]
   },
@@ -1526,37 +1566,37 @@ const USAGE_GROUPS = [
       {
         name: "Studio Image · 标准 1K",
         sub: "1 积分 / 张 · 低质量 · 无参考图",
-        counts: { free: "200 张", pro: "3,000 张", ultra: "25,000 张", team: "45,000 张" },
+        counts: { free: "200 张", starter: "750 张", pro: "3,000 张", ultra: "25,000 张", team: "15,000 张" },
         tags: { team: "不限量" }
       },
       {
         name: "Studio Image · 高清 2K",
         sub: "2 积分 / 张 · 低质量 · 无参考图",
-        counts: { free: "100 张", pro: "1,500 张", ultra: "12,500 张", team: "22,500 张" },
+        counts: { free: "100 张", starter: "375 张", pro: "1,500 张", ultra: "12,500 张", team: "7,500 张" },
         tags: { team: "不限量" }
       },
       {
         name: "Studio Image · 超清 4K",
         sub: "3 积分 / 张 · 高质量 · 含参考图",
-        counts: { free: "66 张", pro: "1,000 张", ultra: "8,333 张", team: "15,000 张" },
+        counts: { free: "66 张", starter: "250 张", pro: "1,000 张", ultra: "8,333 张", team: "5,000 张" },
         tags: { team: "不限量" }
       },
       {
         name: "Studio Image · 风格化 2K",
         sub: "8 积分 / 张 · 中质量 · 无参考图",
-        counts: { free: "25 张", pro: "375 张", ultra: "3,125 张", team: "5,625 张" },
+        counts: { free: "25 张", starter: "93 张", pro: "375 张", ultra: "3,125 张", team: "1,875 张" },
         tags: { team: "每月不限量" }
       }
     ]
   }
 ];
 
-const TIERS = ["free", "pro", "ultra", "team"];
+const TIERS = ["free", "starter", "pro", "ultra", "team"];
 
 function UsageComparison({ billing, highlightId, currentPlanId, accentToken }) {
   const cols = PLANS;
   // 1.4fr left "model" column, 1fr per tier — keeps numbers and tags readable.
-  const gridCols = "1.4fr 1fr 1fr 1fr 1fr";
+  const gridCols = "1.4fr 1fr 1fr 1fr 1fr 1fr";
 
   return (
     <div style={{ padding: "0 32px 36px" }}>
@@ -1610,7 +1650,7 @@ function UsageComparison({ billing, highlightId, currentPlanId, accentToken }) {
                   )}
                 </div>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 3, flexWrap: "wrap" }}>
-                  <span style={{ fontSize: 12, fontWeight: 600 }}>¥</span>
+                  <span style={{ fontSize: 12, fontWeight: 600 }}>$</span>
                   <span style={{ fontSize: 22, fontWeight: 700, letterSpacing: -0.5, lineHeight: 1 }}>{intP}</span>
                   <span style={{ fontSize: 13, color: "var(--text-dim)", fontWeight: 500 }}>{decP}</span>
                   <span style={{ fontSize: 11, color: "var(--text-mute)", marginLeft: 2 }}>
