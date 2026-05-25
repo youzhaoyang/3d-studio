@@ -47,7 +47,6 @@ const PLANS = [
     savings: 50,
     cta: "升级",
     ctaState: "primary",
-    payments: ["Stripe", "PayPal"],
     credits: "每月 [[750]] 积分",
     sections: [
       {
@@ -87,7 +86,6 @@ const PLANS = [
     savings: 50,
     cta: "当前套餐",
     ctaState: "disabled",
-    payments: ["Stripe", "PayPal"],
     credits: "每月 [[3000]] 积分",
     sections: [
       {
@@ -128,7 +126,6 @@ const PLANS = [
     badge: "Best Value",
     cta: "升级",
     ctaState: "primary",
-    payments: ["Stripe", "PayPal"],
     perk: "解锁所有图像生成模型，每日前 20 张免费，之后享 80% 积分折扣",
     credits: "每月 [[25000]] 积分",
     sections: [
