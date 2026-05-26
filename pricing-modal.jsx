@@ -45,8 +45,9 @@ const PLANS = [
     listPriceYearly: 5.0,
     yearlyTotal: 30,
     savings: 50,
-    cta: "升级",
-    ctaState: "primary",
+    // 当前用户订阅了专业版（pro），入门版比专业版低，无法降级
+    cta: "不可降级",
+    ctaState: "disabled",
     credits: "每月 [[750]] 积分",
     sections: [
       {
@@ -1621,6 +1622,11 @@ function UsageComparison({ billing, highlightId, currentPlanId, accentToken }) {
           <div />
           {cols.map(plan => {
             const isCurrent = plan.id === currentPlanId;
+            // Disable any plan whose ctaState is "disabled" (current sub OR
+            // lower-tier downgrade like starter when current=pro). free is
+            // also disabled but keeps its own "免费使用" visual.
+            const isDisabled = isCurrent || plan.ctaState === "disabled";
+            const isFree = plan.id === "free";
             const accent = ToneAccent(plan.tone);
             const price = billing === "yearly" ? plan.priceYearly : plan.priceMonthly;
             const [intP, decP] = formatPrice(price);
@@ -1655,29 +1661,42 @@ function UsageComparison({ billing, highlightId, currentPlanId, accentToken }) {
                   </span>
                 </div>
                 <button
-                  disabled={isCurrent}
+                  disabled={isDisabled}
                   style={{
                     marginTop: 4,
                     padding: "8px 12px",
                     borderRadius: 9,
-                    border: "none",
-                    background: isCurrent
-                      ? "rgba(255,255,255,0.08)"
-                      : (plan.id === "free" ? "rgba(255,255,255,0.04)" : accentToken),
-                    color: isCurrent
-                      ? "var(--text-dim)"
-                      : (plan.id === "free" ? "var(--text-dim)" : "#0a0a0c"),
                     fontSize: 12,
                     fontWeight: 600,
-                    cursor: isCurrent ? "default" : "pointer",
+                    cursor: isDisabled ? "default" : "pointer",
                     fontFamily: "inherit",
                     transition: "filter .12s ease",
-                    border: isCurrent ? "1px solid var(--border)" : "none"
+                    // Visual tiers:
+                    // - current plan: muted grey "当前套餐" pill
+                    // - free: subtle dim pill labeled "免费使用"
+                    // - disabled non-current non-free (e.g. starter when on pro):
+                    //   muted dashed pill labeled with plan.cta (e.g. "不可降级")
+                    // - everyone else: accent CTA button
+                    background: isCurrent
+                      ? "rgba(255,255,255,0.08)"
+                      : isFree
+                        ? "rgba(255,255,255,0.04)"
+                        : isDisabled
+                          ? "rgba(255,255,255,0.04)"
+                          : accentToken,
+                    color: isCurrent || isFree
+                      ? "var(--text-dim)"
+                      : isDisabled
+                        ? "var(--text-mute)"
+                        : "#0a0a0c",
+                    border: isCurrent || (isDisabled && !isFree)
+                      ? "1px solid var(--border)"
+                      : "none"
                   }}
-                  onMouseEnter={e => { if (!isCurrent) e.currentTarget.style.filter = "brightness(1.06)"; }}
+                  onMouseEnter={e => { if (!isDisabled) e.currentTarget.style.filter = "brightness(1.06)"; }}
                   onMouseLeave={e => { e.currentTarget.style.filter = "brightness(1)"; }}
                 >
-                  {isCurrent ? "当前套餐" : (plan.id === "free" ? "免费使用" : plan.cta)}
+                  {isCurrent ? "当前套餐" : isFree ? "免费使用" : plan.cta}
                 </button>
               </div>
             );
